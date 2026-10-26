@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>عالم الحساب الممتع - المعلمة منال أبو زنيد</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --font-main: 'Cairo', 'Tajawal', sans-serif;
+        }
+        body {
+            font-family: var(--font-main);
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #38bdf8 0%, #bae6fd 65%, #86efac 65%, #4ade80 100%);
+            min-height: 100vh;
+        }
+
+        /* Animations */
+        @keyframes floatCloud {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-120vw); }
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+            50% { transform: scale(1.03); box-shadow: 0 0 20px 8px rgba(250, 204, 21, 0.4); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.4); opacity: 0; }
+            80% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes shakeWrong {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px) rotate(-2deg); }
+            40%, 80% { transform: translateX(10px) rotate(2deg); }
+        }
+
+        .cloud-1 { animation: floatCloud 45s linear infinite; }
+        .cloud-2 { animation: floatCloud 65s linear infinite 12s; }
+        .cloud-3 { animation: floatCloud 55s linear infinite 28s; }
+        .animate-bounce-slow { animation: bounceSlow 3s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulseGlow 2.5s infinite; }
+        .animate-pop { animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .animate-shake { animation: shakeWrong 0.45s ease-in-out; }
+
+        /* 3D Cartoon Buttons */
+        .btn-cartoon {
+            transition: all 0.12s ease;
+            position: relative;
+            top: 0;
+        }
+        .btn-cartoon:active {
+            top: 6px;
+            box-shadow: 0 2px 0 0 var(--btn-shadow, #1e293b) !important;
+        }
+
+        .btn-yellow {
+            background: linear-gradient(180deg, #fde047 0%, #eab308 100%);
+            --btn-shadow: #a16207;
+            box-shadow: 0 8px 0 0 #a16207, 0 12px 20px rgba(0,0,0,0.15);
+            border: 3px solid #fef08a;
+        }
+        .btn-blue {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            --btn-shadow: #0369a1;
+            box-shadow: 0 8px 0 0 #0369a1, 0 12px 20px rgba(0,0,0,0.15);
+            border: 3px solid #bae6fd;
+        }
+        .btn-green {
+            background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+            --btn-shadow: #15803d;
+            box-shadow: 0 8px 0 0 #15803d, 0 12px 20px rgba(0,0,0,0.15);
+            border: 3px solid #bbf7d0;
+        }
+        .btn-purple {
+            background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+            --btn-shadow: #6b21a8;
+            box-shadow: 0 8px 0 0 #6b21a8, 0 12px 20px rgba(0,0,0,0.15);
+            border: 3px solid #e9d5ff;
+        }
+        .btn-orange {
+            background: linear-gradient(180deg, #fb923c 0%, #ea580c 100%);
+            --btn-shadow: #9a3412;
+            box-shadow: 0 8px 0 0 #9a3412, 0 12px 20px rgba(0,0,0,0.15);
+            border: 3px solid #fed7aa;
+        }
+        .btn-answer {
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+            --btn-shadow: #94a3b8;
+            box-shadow: 0 8px 0 0 #94a3b8, 0 10px 15px rgba(0,0,0,0.1);
+            border: 4px solid #cbd5e1;
+        }
+        .btn-answer:hover {
+            border-color: #38bdf8;
+            background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        /* Cartoon Glass Panel */
+        .cartoon-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 6px solid #ffffff;
+            box-shadow: 0 14px 0 0 rgba(14, 116, 144, 0.2), 0 20px 35px rgba(0, 0, 0, 0.18);
+            border-radius: 2rem;
+        }
+
+        /* Ten Frame Grid */
+        .ten-frame {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            background: #f8fafc;
+            border: 3px solid #64748b;
+            border-radius: 14px;
+            padding: 8px;
+        }
+        .ten-cell {
+            aspect-ratio: 1;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            background: white;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .ten-cell.filled-1 {
+            background: #fee2e2;
+            border: 2px solid #f87171;
+        }
+        .ten-cell.filled-2 {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+        }
+        .ten-cell.interactive-counted {
+            transform: scale(1.18);
+            box-shadow: 0 0 0 3px #22c55e;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
+
+        /* Print Certificate Styles */
+        @media print {
+            body * { visibility: hidden; }
+            #certificate-printable, #certificate-printable * { visibility: visible; }
+            #certificate-printable {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                box-shadow: none !important;
+            }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between min-h-screen text-slate-800 select-none">
+
+    <!-- ================= BACKGROUND SCENERY ================= -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <!-- Animated Sun -->
+        <div class="absolute top-5 right-6 md:top-10 md:right-14 w-20 h-20 md:w-28 md:h-28 rounded-full bg-yellow-300 border-4 border-yellow-100 shadow-[0_0_50px_#fde047] flex items-center justify-center animate-bounce-slow">
+            <span class="text-4xl md:text-5xl">🌞</span>
+        </div>
+
+        <!-- Floating Clouds -->
+        <div class="cloud-1 absolute top-10 left-0 opacity-90">
+            <svg width="150" height="75" viewBox="0 0 150 75" fill="white">
+                <circle cx="45" cy="45" r="25"/>
+                <circle cx="75" cy="32" r="30"/>
+                <circle cx="108" cy="45" r="22"/>
+                <rect x="45" y="42" width="65" height="25" rx="10"/>
+            </svg>
+        </div>
+        <div class="cloud-2 absolute top-28 left-1/3 opacity-75 scale-75">
+            <svg width="150" height="75" viewBox="0 0 150 75" fill="white">
+                <circle cx="45" cy="45" r="25"/>
+                <circle cx="75" cy="32" r="30"/>
+                <circle cx="108" cy="45" r="22"/>
+                <rect x="45" y="42" width="65" height="25" rx="10"/>
+            </svg>
+        </div>
+        <div class="cloud-3 absolute top-16 left-2/3 opacity-85 scale-90">
+            <svg width="150" height="75" viewBox="0 0 150 75" fill="white">
+                <circle cx="45" cy="45" r="25"/>
+                <circle cx="75" cy="32" r="30"/>
+                <circle cx="108" cy="45" r="22"/>
+                <rect x="45" y="42" width="65" height="25" rx="10"/>
+            </svg>
+        </div>
+
+        <!-- Bottom Grass Hills & Flowers -->
+        <div class="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-green-600 to-green-400 rounded-t-[50%] scale-x-125 border-t-8 border-green-300"></div>
+        <div class="absolute bottom-3 left-8 text-2xl md:text-3xl animate-bounce-slow">🌻</div>
+        <div class="absolute bottom-5 right-10 text-2xl md:text-3xl animate-bounce-slow" style="animation-delay: 1s;">🌷</div>
+        <div class="absolute bottom-2 left-1/3 text-xl md:text-2xl">🌼</div>
+        <div class="absolute bottom-4 right-1/4 text-xl md:text-2xl">🍄</div>
+    </div>
+
+    <!-- ================= TOP BAR HEADER ================= -->
+    <header class="relative z-20 w-full max-w-5xl mx-auto pt-3 px-3 md:px-6 flex flex-wrap items-center justify-between gap-2">
+        <!-- Teacher Supervised Badge -->
+        <div class="flex items-center gap-2.5 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border-4 border-amber-400 shadow-lg">
+            <span class="text-2xl md:text-3xl animate-bounce">👑</span>
+            <div class="leading-tight">
+                <p class="text-[11px] md:text-xs font-bold text-amber-600">إعداد وإشراف المعلمة المبدعة</p>
+                <h2 class="text-sm md:text-lg font-black text-slate-800">منال أبو زنيد</h2>
+            </div>
+        </div>
+
+        <!-- Controls & Total Stars -->
+        <div class="flex items-center gap-2 md:gap-3">
+            <!-- Total Stars Counter -->
+            <div class="flex items-center gap-1.5 bg-amber-400 text-amber-950 font-black px-3.5 py-1.5 md:px-4 md:py-2 rounded-full border-4 border-white shadow-md">
+                <span class="text-xl md:text-2xl">⭐</span>
+                <span id="header-total-stars" class="text-lg md:text-xl">٠</span>
+            </div>
+
+            <!-- Sound Toggle Button -->
+            <button id="btn-sound-toggle" onclick="toggleSound()" class="btn-cartoon btn-blue w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-xl md:text-2xl text-white" title="الصوت">
+                🔊
+            </button>
+
+            <!-- Home Button (Shown during game) -->
+            <button id="btn-home-nav" onclick="goHome()" class="hidden btn-cartoon btn-orange px-3.5 py-2 rounded-full flex items-center gap-1.5 text-white font-black text-sm md:text-base">
+                <span>🏠</span>
+                <span class="hidden sm:inline">الرئيسية</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <main class="relative z-10 flex-1 flex items-center justify-center w-full max-w-5xl mx-auto p-3 md:p-5 my-auto">
+
+        <!-- ==================== SCREEN 1: WELCOME / SPLASH ==================== -->
+        <section id="screen-welcome" class="w-full cartoon-card p-5 md:p-8 text-center animate-pop">
+            <!-- Game Logo Header -->
+            <div class="inline-block bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-600 text-white px-6 py-2 rounded-full text-xs md:text-sm font-black mb-3 shadow-md border-2 border-white">
+                ✨ رحلة الأرقام الهندية الممتعة ✨
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-sky-600 to-indigo-800 drop-shadow-sm mb-2">
+                عالم الحساب الممتع
+            </h1>
+
+            <!-- Dedicated Teacher Banner -->
+            <div class="max-w-lg mx-auto my-3 bg-gradient-to-r from-amber-100 via-yellow-200 to-amber-100 border-4 border-amber-400 rounded-2xl p-3 shadow-md animate-pulse-glow">
+                <div class="flex items-center justify-center gap-2 text-amber-950 font-black text-base sm:text-xl md:text-2xl">
+                    <span>🌟</span>
+                    <span>مع المعلمة المبدعة: منال أبو زنيد</span>
+                    <span>🌟</span>
+                </div>
+                <p class="text-xs md:text-sm font-bold text-amber-800 mt-1">
+                    الجمع ضمن ١٨ • جمع العشرات • تحدي الأبطال
+                </p>
+            </div>
+
+            <!-- Student Name & Avatar Selection -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-5 text-right bg-sky-50/90 p-4 rounded-3xl border-3 border-sky-200">
+                <!-- Student Name Input -->
+                <div class="flex flex-col justify-center">
+                    <label for="input-player-name" class="font-black text-slate-700 text-sm md:text-base mb-1.5 flex items-center gap-1.5">
+                        <span>✏️</span>
+                        <span>اكتب اسمك يا بطل / يا بطلة:</span>
+                    </label>
+                    <input id="input-player-name" type="text" placeholder="مثال: سارة / أحمد" maxlength="22"
+                        class="w-full px-4 py-3 rounded-2xl border-4 border-sky-300 focus:border-amber-400 focus:outline-none text-base md:text-lg font-black text-slate-800 bg-white shadow-inner"
+                        oninput="updatePlayerName(this.value)">
+                    <p class="text-xs text-slate-500 font-bold mt-1.5">سيظهر اسمك على شهادة التفوق الخاصة بك! 🎓</p>
+                </div>
+
+                <!-- Avatar Picker -->
+                <div>
+                    <p class="font-black text-slate-700 text-sm md:text-base mb-2 flex items-center gap-1.5">
+                        <span>🎭</span>
+                        <span>اختر شخصيتك الكرتونية:</span>
+                    </p>
+                    <div id="avatar-grid" class="grid grid-cols-4 gap-2">
+                        <button onclick="selectAvatar(0)" id="avatar-btn-0" class="avatar-btn flex flex-col items-center p-2 rounded-2xl border-4 border-amber-400 bg-amber-100 shadow-sm transition transform scale-105">
+                            <span class="text-2xl md:text-3xl">🧑‍🚀</span>
+                            <span class="text-[11px] font-black mt-1 text-slate-800">رائد الفضاء</span>
+                        </button>
+                        <button onclick="selectAvatar(1)" id="avatar-btn-1" class="avatar-btn flex flex-col items-center p-2 rounded-2xl border-4 border-transparent bg-white hover:bg-sky-100 transition">
+                            <span class="text-2xl md:text-3xl">👸</span>
+                            <span class="text-[11px] font-black mt-1 text-slate-800">الأميرة</span>
+                        </button>
+                        <button onclick="selectAvatar(2)" id="avatar-btn-2" class="avatar-btn flex flex-col items-center p-2 rounded-2xl border-4 border-transparent bg-white hover:bg-sky-100 transition">
+                            <span class="text-2xl md:text-3xl">🦸‍♂️</span>
+                            <span class="text-[11px] font-black mt-1 text-slate-800">البطل الذكي</span>
+                        </button>
+                        <button onclick="selectAvatar(3)" id="avatar-btn-3" class="avatar-btn flex flex-col items-center p-2 rounded-2xl border-4 border-transparent bg-white hover:bg-sky-100 transition">
+                            <span class="text-2xl md:text-3xl">🦁</span>
+                            <span class="text-[11px] font-black mt-1 text-slate-800">المستكشف</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 Game Modes Cards -->
+            <h3 class="text-lg md:text-xl font-black text-slate-700 mb-3">👇 اختر طور اللعب لتبدأ المغامرة 👇</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Mode 1: Addition within 18 -->
+                <button onclick="startGame('within18')" class="btn-cartoon btn-green rounded-3xl p-4 md:p-5 text-white text-right flex flex-col justify-between group">
+                    <div class="flex items-center justify-between w-full mb-2">
+                        <span class="bg-white/25 px-3 py-1 rounded-full text-xs font-black">الطور الأول</span>
+                        <span class="text-3xl md:text-4xl group-hover:scale-110 transition">🍎</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl md:text-2xl font-black mb-1">الجمع ضمن ١٨</h4>
+                        <p class="text-xs md:text-sm font-bold text-green-50 opacity-95">
+                            أمثلة: ٧ + ٨ = ١٥ ، ٩ + ٦ = ١٥ مع لوحة العشرة والفواكه!
+                        </p>
+                    </div>
+                    <div class="mt-3 w-full bg-white/20 rounded-xl py-1.5 text-center font-black text-sm">
+                        ابدأ اللعب الآن ◀
+                    </div>
+                </button>
+
+                <!-- Mode 2: Adding Tens -->
+                <button onclick="startGame('tens')" class="btn-cartoon btn-blue rounded-3xl p-4 md:p-5 text-white text-right flex flex-col justify-between group">
+                    <div class="flex items-center justify-between w-full mb-2">
+                        <span class="bg-white/25 px-3 py-1 rounded-full text-xs font-black">الطور الثاني</span>
+                        <span class="text-3xl md:text-4xl group-hover:scale-110 transition">✏️</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl md:text-2xl font-black mb-1">جمع العشرات</h4>
+                        <p class="text-xs md:text-sm font-bold text-sky-50 opacity-95">
+                            أمثلة: ٢٠ + ٣٠ = ٥٠ ، ٤٠ + ٥٠ = ٩٠ مع حزم العشرات الملونة!
+                        </p>
+                    </div>
+                    <div class="mt-3 w-full bg-white/20 rounded-xl py-1.5 text-center font-black text-sm">
+                        ابدأ اللعب الآن ◀
+                    </div>
+                </button>
+
+                <!-- Mode 3: Mixed Heroes Challenge -->
+                <button onclick="startGame('mixed')" class="btn-cartoon btn-purple rounded-3xl p-4 md:p-5 text-white text-right flex flex-col justify-between group">
+                    <div class="flex items-center justify-between w-full mb-2">
+                        <span class="bg-amber-300 text-purple-950 px-3 py-1 rounded-full text-xs font-black">⭐ نجوم مضاعفة</span>
+                        <span class="text-3xl md:text-4xl group-hover:scale-110 transition">🏆</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl md:text-2xl font-black mb-1">تحدي الأبطال</h4>
+                        <p class="text-xs md:text-sm font-bold text-purple-50 opacity-95">
+                            أسئلة متنوعة للجمع ضمن ١٨ وجمع العشرات مع مؤقت حماسي!
+                        </p>
+                    </div>
+                    <div class="mt-3 w-full bg-white/20 rounded-xl py-1.5 text-center font-black text-sm">
+                        انطلق للتحدي ◀
+                    </div>
+                </button>
+            </div>
+
+            <!-- Quick Preview Certificate Button -->
+            <div class="mt-5 flex flex-wrap items-center justify-center gap-3">
+                <button onclick="openCertificateModal()" class="btn-cartoon btn-yellow px-5 py-2.5 rounded-2xl font-black text-amber-950 text-sm md:text-base flex items-center gap-2">
+                    <span>🎓</span>
+                    <span>معاينة شهادة التفوق من المعلمة منال أبو زنيد</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==================== SCREEN 2: GAMEPLAY ARENA ==================== -->
+        <section id="screen-game" class="hidden w-full cartoon-card p-4 sm:p-6 md:p-7">
+            <!-- Top Status Bar: Mode Title, Question Progress, Streak, Timer -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b-4 border-sky-100">
+                <!-- Player Info & Mode -->
+                <div class="flex items-center gap-2">
+                    <div id="game-avatar-badge" class="w-11 h-11 rounded-2xl bg-amber-100 border-3 border-amber-400 flex items-center justify-center text-2xl shadow-sm">
+                        🧑‍🚀
+                    </div>
+                    <div>
+                        <h3 id="game-mode-title" class="font-black text-base md:text-lg text-sky-800">الجمع ضمن ١٨</h3>
+                        <p id="game-player-greeting" class="text-xs font-bold text-slate-500">هيا يا بطل!</p>
+                    </div>
+                </div>
+
+                <!-- Stats Badges -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <!-- Streak Counter -->
+                    <div id="streak-badge" class="flex items-center gap-1 bg-orange-100 border-2 border-orange-400 text-orange-800 px-3 py-1 rounded-full font-black text-xs md:text-sm">
+                        <span>🔥 سلسلة:</span>
+                        <span id="game-streak-num">٠</span>
+                    </div>
+
+                    <!-- Timer (Only in Mixed Mode) -->
+                    <div id="timer-badge" class="hidden items-center gap-1 bg-purple-100 border-2 border-purple-400 text-purple-900 px-3 py-1 rounded-full font-black text-xs md:text-sm">
+                        <span>⏱️ الوقت:</span>
+                        <span id="game-timer-num">٢٠</span>
+                    </div>
+
+                    <!-- Score in Round -->
+                    <div class="flex items-center gap-1 bg-emerald-100 border-2 border-emerald-400 text-emerald-900 px-3 py-1 rounded-full font-black text-xs md:text-sm">
+                        <span>✅ النقاط:</span>
+                        <span id="game-score-num">٠</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Progress Track (10 Questions) -->
+            <div class="mb-5">
+                <div class="flex justify-between items-center text-xs md:text-sm font-black text-slate-600 mb-1.5">
+                    <span>السؤال <span id="question-current-num" class="text-sky-600">١</span> من <span id="question-total-num">١٠</span></span>
+                    <span class="text-amber-600">الهدف: قلعة النجاح 🏰</span>
+                </div>
+                <div class="relative w-full h-6 bg-slate-200 rounded-full border-3 border-slate-300 overflow-visible p-0.5">
+                    <div id="progress-bar-fill" class="h-full bg-gradient-to-l from-emerald-400 to-sky-500 rounded-full transition-all duration-500" style="width: 10%;"></div>
+                    <div id="progress-avatar-runner" class="absolute -top-3 text-2xl transition-all duration-500" style="right: calc(10% - 14px);">
+                        🧑‍🚀
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUESTION BOARD -->
+            <div id="question-card" class="relative bg-gradient-to-b from-sky-50 to-indigo-50/70 border-4 border-sky-200 rounded-3xl p-4 md:p-6 text-center shadow-inner mb-4">
+                <!-- Audio Speak Question Button -->
+                <div class="flex items-center justify-between mb-2">
+                    <span id="question-sub-hint" class="bg-sky-200/80 text-sky-900 text-xs md:text-sm font-black px-3 py-1 rounded-full">
+                        احسب ناتج الجمع يا ذكي!
+                    </span>
+                    <button onclick="toggleVisualHelper()" id="btn-toggle-helper" class="btn-cartoon btn-yellow px-3.5 py-1.5 rounded-full text-xs md:text-sm font-black text-amber-950 flex items-center gap-1">
+                        <span>💡</span>
+                        <span id="helper-btn-label">إخفاء الرسم المساعد</span>
+                    </button>
+                </div>
+
+                <!-- Big Hindi Numerals Equation -->
+                <div dir="rtl" class="my-3 flex items-center justify-center gap-2 sm:gap-4 md:gap-6 text-4xl sm:text-6xl md:text-7xl font-black text-slate-800 tracking-wide">
+                    <div id="eq-num1" class="bg-white px-4 py-2 sm:px-6 sm:py-3 rounded-3xl border-4 border-rose-300 text-rose-600 shadow-sm">
+                        ٧
+                    </div>
+                    <span class="text-sky-600">+</span>
+                    <div id="eq-num2" class="bg-white px-4 py-2 sm:px-6 sm:py-3 rounded-3xl border-4 border-amber-300 text-amber-600 shadow-sm">
+                        ٨
+                    </div>
+                    <span class="text-emerald-600">=</span>
+                    <div id="eq-answer-slot" class="bg-amber-100/90 px-5 py-2 sm:px-7 sm:py-3 rounded-3xl border-4 border-dashed border-amber-500 text-amber-700 min-w-[75px] sm:min-w-[110px]">
+                        ؟
+                    </div>
+                </div>
+
+                <!-- Tens Verbal Breakdown (Only shown for Adding Tens mode) -->
+                <div id="tens-verbal-banner" class="hidden mt-3 bg-indigo-100 border-2 border-indigo-300 text-indigo-950 rounded-2xl py-2 px-4 font-black text-sm md:text-lg">
+                    <!-- Dynamic: ٢ عشرات + ٣ عشرات = ٥ عشرات = ٥٠ -->
+                </div>
+            </div>
+
+            <!-- INTERACTIVE VISUAL HELPER AREA (Ten-Frames or Base-10 Bundles) -->
+            <div id="visual-helper-box" class="bg-white border-4 border-amber-200 rounded-3xl p-3 sm:p-4 mb-5 shadow-sm transition-all">
+                <div class="flex items-center justify-between mb-2">
+                    <p id="visual-helper-title" class="text-xs sm:text-sm font-black text-slate-700 flex items-center gap-1.5">
+                        <span>🎨</span>
+                        <span>وسيلة الإيضاح التفاعلية (اضغط على العناصر لعدّها!):</span>
+                    </p>
+                    <span id="interactive-counter-badge" class="bg-amber-100 border-2 border-amber-400 text-amber-900 px-3 py-0.5 rounded-full text-xs font-black">
+                        العدّاد: ٠
+                    </span>
+                </div>
+
+                <!-- Dynamic Content Injected by JS -->
+                <div id="visual-stage" class="min-h-[110px] flex flex-col items-center justify-center"></div>
+            </div>
+
+            <!-- MULTIPLE CHOICE OPTIONS (4 Tactile 3D Buttons) -->
+            <div id="options-container" class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Teacher Encouragement Toast -->
+            <div id="feedback-banner" class="hidden mt-4 p-3 rounded-2xl border-4 text-center font-black text-base md:text-lg animate-pop"></div>
+        </section>
+
+        <!-- ==================== SCREEN 3: ROUND CELEBRATION & RESULTS ==================== -->
+        <section id="screen-results" class="hidden w-full cartoon-card p-6 md:p-8 text-center animate-pop">
+            <div class="text-5xl md:text-6xl mb-2 animate-bounce">🎉</div>
+            <h2 id="results-title" class="text-2xl sm:text-3xl md:text-4xl font-black text-sky-800 mb-1">
+                أحسنت يا بطل الحساب!
+            </h2>
+            <p class="text-sm md:text-base font-bold text-amber-700 mb-4">
+                المعلمة منال أبو زنيد فخورة جداً بمجهودك الرائع! 🌟
+            </p>
+
+            <!-- 3 Stars Display -->
+            <div id="results-stars-row" class="flex items-center justify-center gap-3 my-4 text-5xl md:text-6xl">
+                <span>⭐</span><span>⭐</span><span>⭐</span>
+            </div>
+
+            <!-- Score Card Summary -->
+            <div class="max-w-md mx-auto grid grid-cols-3 gap-3 bg-sky-50 p-4 rounded-3xl border-4 border-sky-200 my-5">
+                <div class="bg-white p-3 rounded-2xl border-2 border-sky-100">
+                    <p class="text-xs font-bold text-slate-500">الإجابات الصحيحة</p>
+                    <p id="res-correct-count" class="text-2xl md:text-3xl font-black text-emerald-600 mt-1">١٠ / ١٠</p>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border-2 border-sky-100">
+                    <p class="text-xs font-bold text-slate-500">النقاط المكتسبة</p>
+                    <p id="res-score-count" class="text-2xl md:text-3xl font-black text-sky-600 mt-1">١٠٠</p>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border-2 border-sky-100">
+                    <p class="text-xs font-bold text-slate-500">أعلى سلسلة</p>
+                    <p id="res-best-streak" class="text-2xl md:text-3xl font-black text-orange-500 mt-1">١٠ 🔥</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4 mt-6">
+                <button onclick="openCertificateModal()" class="btn-cartoon btn-yellow px-6 py-3.5 rounded-2xl font-black text-amber-950 text-base md:text-lg flex items-center gap-2">
+                    <span>🎓</span>
+                    <span>استلام شهادة التفوق</span>
+                </button>
+                <button onclick="replayCurrentMode()" class="btn-cartoon btn-green px-6 py-3.5 rounded-2xl font-black text-white text-base md:text-lg flex items-center gap-2">
+                    <span>🔄</span>
+                    <span>العب جولة جديدة</span>
+                </button>
+                <button onclick="goHome()" class="btn-cartoon btn-blue px-6 py-3.5 rounded-2xl font-black text-white text-base md:text-lg flex items-center gap-2">
+                    <span>🏠</span>
+                    <span>تغيير الطور</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= CERTIFICATE OF EXCELLENCE MODAL ================= -->
+    <div id="modal-certificate" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
+        <div class="w-full max-w-2xl my-auto animate-pop">
+            <!-- Printable Certificate Box -->
+            <div id="certificate-printable" class="relative bg-gradient-to-br from-amber-50 via-white to-sky-50 border-[10px] border-double border-amber-500 rounded-3xl p-6 sm:p-8 text-center shadow-2xl overflow-hidden">
+                <!-- Corner Ribbons -->
+                <div class="absolute top-3 right-3 text-3xl">🏅</div>
+                <div class="absolute top-3 left-3 text-3xl">🏅</div>
+                <div class="absolute bottom-3 right-3 text-3xl">🌟</div>
+                <div class="absolute bottom-3 left-3 text-3xl">🌟</div>
+
+                <div class="inline-block bg-amber-400 text-amber-950 font-black px-5 py-1 rounded-full text-xs sm:text-sm mb-2 border-2 border-amber-600">
+                    عالم الحساب الممتع للأبطال
+                </div>
+
+                <h2 class="text-2xl sm:text-4xl font-black text-sky-900 mb-2">
+                    شهادة شكر وتفوق
+                </h2>
+                <p class="text-sm sm:text-base font-bold text-slate-600 mb-3">
+                    تسرّ <span class="text-rose-600 font-black">المعلمة منال أبو زنيد</span> أن تمنح هذه الشهادة للطالب/ـة المتميز/ة:
+                </p>
+
+                <!-- Editable Student Name inside Certificate -->
+                <div class="max-w-md mx-auto my-3">
+                    <input id="cert-student-name-input" type="text" placeholder="اكتب اسمك هنا..."
+                        class="w-full text-center text-xl sm:text-3xl font-black text-indigo-800 bg-amber-100/70 border-b-4 border-amber-500 rounded-xl py-2 px-4 focus:outline-none"
+                        oninput="updatePlayerName(this.value)">
+                </div>
+
+                <p class="text-sm sm:text-base font-bold text-slate-700 leading-relaxed max-w-lg mx-auto my-3">
+                    لتفوقه/ـا وإتقانه/ـا مهارات <span class="text-emerald-700 font-black">الجمع ضمن ١٨</span> و<span class="text-sky-700 font-black">جمع العشرات</span> بذكاء وتميّز وحصوله/ـا على:
+                </p>
+
+                <div class="inline-flex items-center gap-3 bg-white px-6 py-2.5 rounded-2xl border-4 border-amber-300 shadow-sm my-2">
+                    <span class="text-2xl sm:text-3xl">⭐</span>
+                    <span id="cert-stars-total" class="text-xl sm:text-2xl font-black text-amber-600">١٥ نجمة ذهبية</span>
+                </div>
+
+                <!-- Signature Footer -->
+                <div class="mt-6 pt-4 border-t-2 border-dashed border-amber-300 flex items-center justify-around text-xs sm:text-sm font-black text-slate-700">
+                    <div>
+                        <p class="text-slate-500">إشراف المعلمة المبدعة</p>
+                        <p class="text-base sm:text-lg text-rose-700 mt-0.5">منال أبو زنيد 🌸</p>
+                    </div>
+                    <div id="cert-avatar-stamp" class="w-14 h-14 rounded-full bg-amber-100 border-4 border-amber-400 flex items-center justify-center text-3xl shadow-inner">
+                        🧑‍🚀
+                    </div>
+                    <div>
+                        <p class="text-slate-500">التاريخ</p>
+                        <p id="cert-date-hindi" class="text-base sm:text-lg text-sky-800 mt-0.5">٢٠٢٦</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Controls (Not Printed) -->
+            <div class="no-print flex items-center justify-center gap-3 mt-4">
+                <button onclick="window.print()" class="btn-cartoon btn-green px-6 py-3 rounded-2xl font-black text-white flex items-center gap-2 text-sm sm:text-base">
+                    <span>🖨️</span>
+                    <span>طباعة الشهادة</span>
+                </button>
+                <button onclick="closeCertificateModal()" class="btn-cartoon btn-orange px-6 py-3 rounded-2xl font-black text-white flex items-center gap-2 text-sm sm:text-base">
+                    <span>✖️</span>
+                    <span>إغلاق</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="relative z-20 text-center py-2.5 px-4 text-xs sm:text-sm font-black text-emerald-950">
+        جميع الحقوق محفوظة © عالم الحساب الممتع - بإشراف المعلمة منال أبو زنيد 🌷
+    </footer>
+
+    <!-- ================= GAME JAVASCRIPT LOGIC ================= -->
+    <script>
+        /* =====================================================================
+           1. HINDI NUMERALS CONVERTER (MANDATORY FOR ALL DISPLAYED NUMBERS)
+        ===================================================================== */
+        const HINDI_DIGITS = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+        function toHindiNum(value) {
+            if (value === null || value === undefined) return '';
+            return String(value).replace(/[0-9]/g, (d) => HINDI_DIGITS[parseInt(d, 10)]);
+        }
+
+        /* =====================================================================
+           2. WEB AUDIO SYNTHESIZER (CHEERFUL CARTOON SOUNDS - NO EXTERNAL FILES)
+        ===================================================================== */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'count') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(600 + (interactiveCount * 35), now);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'correct') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.25);
+                    });
+                } else if (type === 'wrong') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(280, now);
+                    osc.frequency.linearRampToValueAtTime(180, now + 0.28);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'fanfare') {
+                    const melody = [523.25, 659.25, 783.99, 659.25, 1046.50];
+                    const times = [0, 0.12, 0.24, 0.36, 0.5];
+                    melody.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + times[idx]);
+                        gain.gain.setValueAtTime(0.28, now + times[idx]);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + times[idx] + 0.35);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + times[idx]);
+                        osc.stop(now + times[idx] + 0.35);
+                    });
+                }
+            } catch (e) {
+                // Ignore audio context restriction errors
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('btn-sound-toggle');
+            btn.textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) playSound('click');
+        }
+
+        /* =====================================================================
+           3. GAME STATE & CONFIGURATION
+        ===================================================================== */
+        const AVATARS = [
+            { icon: '🧑‍🚀', title: 'رائد الفضاء' },
+            { icon: '👸', title: 'الأميرة الصغيرة' },
+            { icon: '🦸‍♂️', title: 'البطل الذكي' },
+            { icon: '🦁', title: 'المستكشف الشجاع' }
+        ];
+
+        const ENCOURAGEMENT_CORRECT = [
+            'ممتاز يا بطل! المعلمة منال أبو زنيد فخورة بك! 🌟',
+            'إجابة عبقرية! أحسنت التفكير والعدّ! 👏',
+            'رائع جداً! أنت نجم الحساب المتألق! 🚀',
+            'يا سلام على الذكاء! استمر هكذا! 🏆',
+            'برافو! إجابة صحيحة وسريعة! 🎉'
+        ];
+
+        const ENCOURAGEMENT_WRONG = [
+            'محاولة جيدة! انظر إلى الرسم المساعد وعدّ بهدوء 💡',
+            'قريب جداً يا بطل! جرّب مرة أخرى بهدوء 💪',
+            'لا بأس، الأبطال يتعلمون من المحاولة! 🌟'
+        ];
+
+        let state = {
+            playerName: '',
+            avatarIndex: 0,
+            totalStars: 0,
+            currentMode: 'within18', // 'within18' | 'tens' | 'mixed'
+            questionIndex: 0,
+            totalQuestions: 10,
+            roundScore: 0,
+            correctCount: 0,
+            streak: 0,
+            bestStreak: 0,
+            helperVisible: true,
+            currentQuestion: null,
+            isAnswering: false,
+            timerInterval: null,
+            timeLeft: 20
+        };
+
+        let interactiveCount = 0;
+
+        /* =====================================================================
+           4. PLAYER SETUP & NAVIGATION
+        ===================================================================== */
+        function updatePlayerName(val) {
+            state.playerName = val.trim();
+            const mainInput = document.getElementById('input-player-name');
+            const certInput = document.getElementById('cert-student-name-input');
+            if (mainInput && mainInput.value !== val) mainInput.value = val;
+            if (certInput && certInput.value !== val) certInput.value = val;
+        }
+
+        function selectAvatar(idx) {
+            playSound('click');
+            state.avatarIndex = idx;
+            for (let i = 0; i < AVATARS.length; i++) {
+                const btn = document.getElementById(`avatar-btn-${i}`);
+                if (i === idx) {
+                    btn.className = 'avatar-btn flex flex-col items-center p-2 rounded-2xl border-4 border-amber-400 bg-amber-100 shadow-sm transition transform scale-105';
+                } else {
+                    btn.className = 'avatar-btn flex flex-col items-center p-2 rounded-2xl border-4 border-transparent bg-white hover:bg-sky-100 transition';
+                }
+            }
+            document.getElementById('cert-avatar-stamp').textContent = AVATARS[idx].icon;
+        }
+
+        function updateHeaderStars() {
+            document.getElementById('header-total-stars').textContent = toHindiNum(state.totalStars);
+            document.getElementById('cert-stars-total').textContent = `${toHindiNum(state.totalStars)} نجمة ذهبية`;
+        }
+
+        function goHome() {
+            playSound('click');
+            stopTimer();
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+            document.getElementById('btn-home-nav').classList.add('hidden');
+        }
+
+        /* =====================================================================
+           5. QUESTION GENERATOR (WITHIN 18 & ADDING TENS)
+        ===================================================================== */
+        function generateQuestion(mode) {
+            let subType = mode;
+            if (mode === 'mixed') {
+                subType = Math.random() < 0.5 ? 'within18' : 'tens';
+            }
+
+            if (subType === 'within18') {
+                // Generate numbers where a + b <= 18 and >= 4, prioritizing bridging 10 and rich facts
+                const pairs = [
+                    [7, 8], [8, 7], [9, 6], [6, 9], [8, 8], [9, 9], [9, 8], [8, 9],
+                    [7, 7], [6, 6], [5, 6], [6, 5], [7, 5], [5, 7], [9, 5], [5, 9],
+                    [8, 6], [6, 8], [4, 5], [5, 4], [7, 6], [6, 7], [9, 4], [4, 9],
+                    [8, 5], [5, 8], [7, 4], [4, 7], [6, 4], [3, 8], [9, 7], [7, 9]
+                ];
+                const chosen = pairs[Math.floor(Math.random() * pairs.length)];
+                const a = chosen[0];
+                const b = chosen[1];
+                const answer = a + b;
+
+                // Generate 3 distinct distractors within 2..18
+                const optionsSet = new Set([answer]);
+                const offsets = [-2, -1, 1, 2, 3, -3];
+                for (let off of offsets.sort(() => Math.random() - 0.5)) {
+                    const candidate = answer + off;
+                    if (candidate >= 2 && candidate <= 18 && !optionsSet.has(candidate)) {
+                        optionsSet.add(candidate);
+                        if (optionsSet.size === 4) break;
+                    }
+                }
+                while (optionsSet.size < 4) {
+                    const r = Math.floor(Math.random() * 15) + 4;
+                    optionsSet.add(r);
+                }
+
+                return {
+                    type: 'within18',
+                    num1: a,
+                    num2: b,
+                    answer: answer,
+                    options: Array.from(optionsSet).sort(() => Math.random() - 0.5)
+                };
+            } else {
+                // Adding Tens: 10..80 + 10..80 <= 90
+                const tensA = Math.floor(Math.random() * 8) + 1; // 1..8
+                const maxTensB = 9 - tensA;
+                const tensB = Math.floor(Math.random() * maxTensB) + 1; // 1..(9-tensA)
+
+                const a = tensA * 10;
+                const b = tensB * 10;
+                const answer = a + b;
+
+                const optionsSet = new Set([answer]);
+                const possibleTens = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+                // Prioritize close tens first
+                const nearby = [answer - 10, answer + 10, answer - 20, answer + 20].filter(x => x >= 10 && x <= 90);
+                for (let n of nearby.sort(() => Math.random() - 0.5)) {
+                    optionsSet.add(n);
+                    if (optionsSet.size === 4) break;
+                }
+                while (optionsSet.size < 4) {
+                    const r = possibleTens[Math.floor(Math.random() * possibleTens.length)];
+                    optionsSet.add(r);
+                }
+
+                return {
+                    type: 'tens',
+                    tens1: tensA,
+                    tens2: tensB,
+                    num1: a,
+                    num2: b,
+                    answer: answer,
+                    options: Array.from(optionsSet).sort(() => Math.random() - 0.5)
+                };
+            }
+        }
+
+        /* =====================================================================
+           6. GAMEPLAY FLOW & RENDERING
+        ===================================================================== */
+        function startGame(mode) {
+            playSound('click');
+            state.currentMode = mode;
+            state.questionIndex = 0;
+            state.roundScore = 0;
+            state.correctCount = 0;
+            state.streak = 0;
+            state.bestStreak = 0;
+            state.helperVisible = true;
+
+            // Update Mode Header
+            const modeTitles = {
+                'within18': '🍎 الجمع ضمن ١٨',
+                'tens': '✏️ جمع العشرات الكاملة',
+                'mixed': '🏆 تحدي الأبطال المختلط'
+            };
+            document.getElementById('game-mode-title').textContent = modeTitles[mode];
+
+            const avatarObj = AVATARS[state.avatarIndex];
+            document.getElementById('game-avatar-badge').textContent = avatarObj.icon;
+            document.getElementById('progress-avatar-runner').textContent = avatarObj.icon;
+
+            const displayName = state.playerName ? state.playerName : avatarObj.title;
+            document.getElementById('game-player-greeting').textContent = `بالتوفيق يا ${displayName}!`;
+
+            // Show/Hide Timer for Mixed Mode
+            const timerBadge = document.getElementById('timer-badge');
+            if (mode === 'mixed') {
+                timerBadge.classList.remove('hidden');
+                timerBadge.classList.add('flex');
+            } else {
+                timerBadge.classList.add('hidden');
+                timerBadge.classList.remove('flex');
+            }
+
+            // Switch Screens
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            document.getElementById('btn-home-nav').classList.remove('hidden');
+
+            loadNextQuestion();
+        }
+
+        function replayCurrentMode() {
+            startGame(state.currentMode);
+        }
+
+        function loadNextQuestion() {
+            stopTimer();
+            state.isAnswering = false;
+            interactiveCount = 0;
+            document.getElementById('interactive-counter-badge').textContent = `العدّاد: ${toHindiNum(0)}`;
+
+            // Hide feedback banner
+            const fb = document.getElementById('feedback-banner');
+            fb.classList.add('hidden');
+
+            // Update Progress Bar & Hindi Numbers
+            const qNum = state.questionIndex + 1;
+            document.getElementById('question-current-num').textContent = toHindiNum(qNum);
+            document.getElementById('question-total-num').textContent = toHindiNum(state.totalQuestions);
+            document.getElementById('game-streak-num').textContent = toHindiNum(state.streak);
+            document.getElementById('game-score-num').textContent = toHindiNum(state.roundScore);
+
+            const pct = Math.min(100, Math.round((qNum / state.totalQuestions) * 100));
+            document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+            document.getElementById('progress-avatar-runner').style.right = `calc(${pct}% - 16px)`;
+
+            // Generate Question
+            state.currentQuestion = generateQuestion(state.currentMode);
+            const q = state.currentQuestion;
+
+            // Render Equation in Hindi Numerals
+            document.getElementById('eq-num1').textContent = toHindiNum(q.num1);
+            document.getElementById('eq-num2').textContent = toHindiNum(q.num2);
+            const ansSlot = document.getElementById('eq-answer-slot');
+            ansSlot.textContent = '؟';
+            ansSlot.className = 'bg-amber-100/90 px-5 py-2 sm:px-7 sm:py-3 rounded-3xl border-4 border-dashed border-amber-500 text-amber-700 min-w-[75px] sm:min-w-[110px]';
+
+            // Tens Verbal Helper Banner
+            const tensBanner = document.getElementById('tens-verbal-banner');
+            if (q.type === 'tens') {
+                document.getElementById('question-sub-hint').textContent = 'اجمع حزم العشرات لتحصل على الناتج!';
+                tensBanner.classList.remove('hidden');
+                tensBanner.innerHTML = `💡 تلميح: <span class="text-rose-600">${toHindiNum(q.tens1)} عشرات</span> + <span class="text-amber-600">${toHindiNum(q.tens2)} عشرات</span> = <span class="text-emerald-700">؟ عشرات</span>`;
+            } else {
+                document.getElementById('question-sub-hint').textContent = 'استخدم لوحة العشرة لجمع العددين بسهولة!';
+                tensBanner.classList.add('hidden');
+            }
+
+            // Render Visual Helper
+            renderVisualHelper(q);
+
+            // Render Multiple Choice Options
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+            q.options.forEach((optVal) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-cartoon btn-answer rounded-3xl py-4 sm:py-5 text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 flex items-center justify-center';
+                btn.textContent = toHindiNum(optVal);
+                btn.onclick = () => checkAnswer(optVal, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            // Start Timer if Mixed Mode
+            if (state.currentMode === 'mixed') {
+                startTimer();
+            }
+        }
+
+        /* =====================================================================
+           7. INTERACTIVE VISUAL HELPER (TEN-FRAMES & TENS BUNDLES)
+        ===================================================================== */
+        function toggleVisualHelper() {
+            playSound('click');
+            state.helperVisible = !state.helperVisible;
+            const box = document.getElementById('visual-helper-box');
+            const label = document.getElementById('helper-btn-label');
+            if (state.helperVisible) {
+                box.classList.remove('hidden');
+                label.textContent = 'إخفاء الرسم المساعد';
+            } else {
+                box.classList.add('hidden');
+                label.textContent = 'ساعدني بالرسم 💡';
+            }
+        }
+
+        function renderVisualHelper(q) {
+            const stage = document.getElementById('visual-stage');
+            stage.innerHTML = '';
+
+            if (q.type === 'within18') {
+                // Render Two Ten-Frames (لوحة العشرة الأولى والثانية) to visualize bridging 10!
+                const total = q.num1 + q.num2;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'w-full flex flex-col items-center gap-3';
+
+                const explain = document.createElement('div');
+                explain.className = 'text-xs sm:text-sm font-bold text-slate-600 text-center';
+                explain.innerHTML = `<span class="inline-block bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full border border-rose-300 mx-1">🍎 العدد الأول: ${toHindiNum(q.num1)}</span> + <span class="inline-block bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full border border-amber-300 mx-1">⭐ العدد الثاني: ${toHindiNum(q.num2)}</span> (لاحظ كيف نُكمل العشرة الأولى!)`;
+                wrapper.appendChild(explain);
+
+                const framesRow = document.createElement('div');
+                framesRow.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl';
+
+                // Create 2 Ten-Frames (10 cells each = 20 cells max)
+                for (let f = 0; f < 2; f++) {
+                    const frameBox = document.createElement('div');
+                    frameBox.className = 'flex flex-col items-center';
+
+                    const frameLabel = document.createElement('span');
+                    frameLabel.className = 'text-xs font-black text-slate-500 mb-1';
+                    frameLabel.textContent = f === 0 ? `لوحة العشرة الأولى (${toHindiNum(10)})` : `لوحة العشرة الثانية`;
+                    frameBox.appendChild(frameLabel);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'ten-frame w-full max-w-[260px]';
+
+                    for (let c = 0; c < 10; c++) {
+                        const globalIndex = f * 10 + c;
+                        const cell = document.createElement('button');
+                        cell.type = 'button';
+
+                        if (globalIndex < q.num1) {
+                            cell.className = 'ten-cell filled-1 cursor-pointer hover:scale-105';
+                            cell.textContent = '🍎';
+                            cell.onclick = () => countVisualItem(cell, 1);
+                        } else if (globalIndex < total) {
+                            cell.className = 'ten-cell filled-2 cursor-pointer hover:scale-105';
+                            cell.textContent = '⭐';
+                            cell.onclick = () => countVisualItem(cell, 1);
+                        } else {
+                            cell.className = 'ten-cell opacity-40 cursor-default';
+                            cell.textContent = '';
+                        }
+                        grid.appendChild(cell);
+                    }
+                    frameBox.appendChild(grid);
+                    framesRow.appendChild(frameBox);
+                }
+
+                wrapper.appendChild(framesRow);
+                stage.appendChild(wrapper);
+
+            } else {
+                // Mode 2: Adding Tens - Render Bundles of 10 Pencils/Blocks (حزم العشرات)
+                const wrapper = document.createElement('div');
+                wrapper.className = 'w-full flex flex-col items-center gap-3';
+
+                const groupsRow = document.createElement('div');
+                groupsRow.className = 'flex flex-wrap items-center justify-center gap-3 sm:gap-5 w-full';
+
+                // Group 1 Bundles
+                const group1Box = createTensBundleGroup(q.tens1, 'rose', 'حزمة ١٠');
+                groupsRow.appendChild(group1Box);
+
+                // Plus Sign
+                const plusSign = document.createElement('div');
+                plusSign.className = 'text-3xl sm:text-4xl font-black text-sky-600';
+                plusSign.textContent = '+';
+                groupsRow.appendChild(plusSign);
+
+                // Group 2 Bundles
+                const group2Box = createTensBundleGroup(q.tens2, 'amber', 'حزمة ١٠');
+                groupsRow.appendChild(group2Box);
+
+                wrapper.appendChild(groupsRow);
+                stage.appendChild(wrapper);
+            }
+        }
+
+        function createTensBundleGroup(bundleCount, colorTheme, labelText) {
+            const container = document.createElement('div');
+            const bgClass = colorTheme === 'rose' ? 'bg-rose-50 border-rose-300' : 'bg-amber-50 border-amber-300';
+            const badgeClass = colorTheme === 'rose' ? 'bg-rose-500 text-white' : 'bg-amber-500 text-white';
+
+            container.className = `flex flex-wrap items-center justify-center gap-2 p-3 rounded-2xl border-3 ${bgClass}`;
+
+            for (let i = 0; i < bundleCount; i++) {
+                const bundleBtn = document.createElement('button');
+                bundleBtn.type = 'button';
+                bundleBtn.className = 'flex flex-col items-center p-1.5 bg-white rounded-xl border-2 border-slate-300 shadow-sm hover:scale-105 transition cursor-pointer';
+                bundleBtn.onclick = () => countVisualItem(bundleBtn, 10);
+
+                // SVG representation of a 10-block tower / pencil bundle
+                bundleBtn.innerHTML = `
+                    <div class="grid grid-cols-2 gap-0.5 bg-sky-100 p-1 rounded border border-sky-400">
+                        ${Array(10).fill('<span class="w-2.5 h-2.5 bg-sky-500 rounded-[2px] block"></span>').join('')}
+                    </div>
+                    <span class="mt-1 px-2 py-0.5 rounded-full text-[11px] font-black ${badgeClass}">${toHindiNum(10)}</span>
+                `;
+                container.appendChild(bundleBtn);
+            }
+            return container;
+        }
+
+        function countVisualItem(element, stepValue) {
+            if (!element.classList.contains('interactive-counted')) {
+                element.classList.add('interactive-counted');
+                interactiveCount += stepValue;
+            } else {
+                element.classList.remove('interactive-counted');
+                interactiveCount = Math.max(0, interactiveCount - stepValue);
+            }
+            playSound('count');
+            document.getElementById('interactive-counter-badge').textContent = `العدّاد: ${toHindiNum(interactiveCount)}`;
+        }
+
+        /* =====================================================================
+           8. ANSWER CHECKING & FEEDBACK
+        ===================================================================== */
+        function checkAnswer(selectedValue, btnElement) {
+            if (state.isAnswering) return;
+            const q = state.currentQuestion;
+            const fb = document.getElementById('feedback-banner');
+
+            if (selectedValue === q.answer) {
+                state.isAnswering = true;
+                stopTimer();
+                playSound('correct');
+
+                // Style button green
+                btnElement.className = 'btn-cartoon btn-green rounded-3xl py-4 sm:py-5 text-3xl sm:text-4xl md:text-5xl font-black text-white flex items-center justify-center scale-105';
+
+                // Reveal Answer in Equation Slot
+                const ansSlot = document.getElementById('eq-answer-slot');
+                ansSlot.textContent = toHindiNum(q.answer);
+                ansSlot.className = 'bg-emerald-500 px-5 py-2 sm:px-7 sm:py-3 rounded-3xl border-4 border-emerald-200 text-white min-w-[75px] sm:min-w-[110px] animate-pop';
+
+                // Complete Tens Verbal Banner if Tens Mode
+                if (q.type === 'tens') {
+                    const totalTens = q.tens1 + q.tens2;
+                    document.getElementById('tens-verbal-banner').innerHTML =
+                        `✨ رائع! <span class="text-rose-600">${toHindiNum(q.tens1)} عشرات</span> + <span class="text-amber-600">${toHindiNum(q.tens2)} عشرات</span> = <span class="text-emerald-700">${toHindiNum(totalTens)} عشرات = ${toHindiNum(q.answer)}</span>`;
+                }
+
+                // Update Scores & Stars
+                state.correctCount++;
+                state.streak++;
+                if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+
+                const bonus = state.currentMode === 'mixed' ? 15 : 10;
+                state.roundScore += bonus;
+                state.totalStars += (state.currentMode === 'mixed' ? 2 : 1);
+                updateHeaderStars();
+
+                document.getElementById('game-streak-num').textContent = toHindiNum(state.streak);
+                document.getElementById('game-score-num').textContent = toHindiNum(state.roundScore);
+
+                // Show Positive Feedback
+                const msg = ENCOURAGEMENT_CORRECT[Math.floor(Math.random() * ENCOURAGEMENT_CORRECT.length)];
+                fb.textContent = msg;
+                fb.className = 'mt-4 p-3 rounded-2xl border-4 bg-emerald-100 border-emerald-400 text-emerald-900 text-center font-black text-base md:text-lg animate-pop';
+                fb.classList.remove('hidden');
+
+                // Mini Confetti Burst
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 35, spread: 60, origin: { y: 0.75 } });
+                }
+
+                setTimeout(() => {
+                    advanceRound();
+                }, 1500);
+
+            } else {
+                // Wrong Answer
+                playSound('wrong');
+                state.streak = 0;
+                document.getElementById('game-streak-num').textContent = toHindiNum(0);
+
+                btnElement.classList.add('animate-shake', 'opacity-50');
+                btnElement.disabled = true;
+
+                // Automatically show visual helper if hidden
+                if (!state.helperVisible) {
+                    toggleVisualHelper();
+                }
+
+                const msg = ENCOURAGEMENT_WRONG[Math.floor(Math.random() * ENCOURAGEMENT_WRONG.length)];
+                fb.textContent = msg;
+                fb.className = 'mt-4 p-3 rounded-2xl border-4 bg-amber-100 border-amber-400 text-amber-900 text-center font-black text-base md:text-lg animate-pop';
+                fb.classList.remove('hidden');
+            }
+        }
+
+        function advanceRound() {
+            state.questionIndex++;
+            if (state.questionIndex >= state.totalQuestions) {
+                finishRound();
+            } else {
+                loadNextQuestion();
+            }
+        }
+
+        /* =====================================================================
+           9. GENTLE TIMER FOR MIXED CHALLENGE MODE
+        ===================================================================== */
+        function startTimer() {
+            state.timeLeft = 20;
+            document.getElementById('game-timer-num').textContent = toHindiNum(state.timeLeft);
+            state.timerInterval = setInterval(() => {
+                state.timeLeft--;
+                document.getElementById('game-timer-num').textContent = toHindiNum(state.timeLeft);
+                if (state.timeLeft <= 0) {
+                    stopTimer();
+                    // Gentle timeout: show correct answer and move on
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function handleTimeOut() {
+            if (state.isAnswering) return;
+            state.isAnswering = true;
+            playSound('wrong');
+            state.streak = 0;
+
+            const q = state.currentQuestion;
+            const ansSlot = document.getElementById('eq-answer-slot');
+            ansSlot.textContent = toHindiNum(q.answer);
+
+            const fb = document.getElementById('feedback-banner');
+            fb.textContent = `⏰ انتهى الوقت! الإجابة الصحيحة هي ${toHindiNum(q.answer)}، لننتقل للسؤال التالي!`;
+            fb.className = 'mt-4 p-3 rounded-2xl border-4 bg-rose-100 border-rose-400 text-rose-900 text-center font-black text-base md:text-lg animate-pop';
+            fb.classList.remove('hidden');
+
+            setTimeout(() => {
+                advanceRound();
+            }, 1800);
+        }
+
+        /* =====================================================================
+           10. END OF ROUND CELEBRATION & CERTIFICATE MODAL
+        ===================================================================== */
+        function finishRound() {
+            stopTimer();
+            playSound('fanfare');
+
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-results').classList.remove('hidden');
+
+            const nameTxt = state.playerName ? state.playerName : AVATARS[state.avatarIndex].title;
+            document.getElementById('results-title').textContent = `أحسنت يا ${nameTxt}!`;
+
+            document.getElementById('res-correct-count').textContent = `${toHindiNum(state.correctCount)} / ${toHindiNum(state.totalQuestions)}`;
+            document.getElementById('res-score-count').textContent = toHindiNum(state.roundScore);
+            document.getElementById('res-best-streak').textContent = `${toHindiNum(state.bestStreak)} 🔥`;
+
+            // Calculate Stars (1 to 3)
+            let starsEarned = 3;
+            if (state.correctCount < 5) starsEarned = 1;
+            else if (state.correctCount < 8) starsEarned = 2;
+
+            const starsRow = document.getElementById('results-stars-row');
+            starsRow.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const s = document.createElement('span');
+                s.textContent = i < starsEarned ? '⭐' : '☆';
+                s.className = i < starsEarned ? 'text-amber-400 drop-shadow-md animate-bounce' : 'text-slate-300';
+                starsRow.appendChild(s);
+            }
+
+            // Big Confetti Celebration
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 100, spread: 90, origin: { y: 0.6 } });
+            }
+        }
+
+        function openCertificateModal() {
+            playSound('fanfare');
+            const certInput = document.getElementById('cert-student-name-input');
+            if (!certInput.value && state.playerName) {
+                certInput.value = state.playerName;
+            } else if (!certInput.value) {
+                certInput.value = AVATARS[state.avatarIndex].title;
+            }
+            updateHeaderStars();
+            document.getElementById('modal-certificate').classList.remove('hidden');
+        }
+
+        function closeCertificateModal() {
+            playSound('click');
+            document.getElementById('modal-certificate').classList.add('hidden');
+        }
+
+        /* =====================================================================
+           11. INITIALIZATION ON LOAD
+        ===================================================================== */
+        window.onload = function () {
+            // Set Today's Date in Hindi Numerals on Certificate
+            const now = new Date();
+            const dateStr = `${toHindiNum(now.getFullYear())}/${toHindiNum(now.getMonth() + 1)}/${toHindiNum(now.getDate())}`;
+            document.getElementById('cert-date-hindi').textContent = dateStr;
+            updateHeaderStars();
+        };
+    </script>
+</body>
+</html>
